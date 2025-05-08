@@ -4,77 +4,76 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Cadastro de Congregações</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  <!-- Firebase -->
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js"></script>
 
   <script>
-  // Configuração do Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyDv-6aazC2diSyhCOJiYUwN5NoZ67PsXUY",
-    authDomain: "marcacao-coletas.firebaseapp.com",
-    databaseURL: "https://marcacao-coletas-default-rtdb.firebaseio.com",
-    projectId: "marcacao-coletas",
-    storageBucket: "marcacao-coletas.appspot.com",
-    messagingSenderId: "546476889758",
-    appId: "1:546476889758:web:f193b3125feeb5f4514d8f"
-  };
+    // Configuração do Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyDv-6aazC2diSyhCOJiYUwN5NoZ67PsXUY",
+      authDomain: "marcacao-coletas.firebaseapp.com",
+      databaseURL: "https://marcacao-coletas-default-rtdb.firebaseio.com",
+      projectId: "marcacao-coletas",
+      storageBucket: "marcacao-coletas.appspot.com",
+      messagingSenderId: "546476889758",
+      appId: "1:546476889758:web:f193b3125feeb5f4514d8f"
+    };
 
-  // Inicializar Firebase
-  const app = firebase.initializeApp(firebaseConfig);
-  const db = firebase.database(); // <-- Aqui garante que db está no escopo global
-</script>
+    // Inicializa o Firebase e o banco de dados
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+  </script>
 </head>
 <body class="container py-4">
   <h1 class="mb-4">Cadastro de Congregações</h1>
-
   <form id="formCadastro">
     <div class="row g-3">
       <div class="col-md-6">
         <label class="form-label">Congregação</label>
-        <input type="text" class="form-control" id="congregacao" required>
+        <input type="text" class="form-control" id="congregacao" required />
       </div>
       <div class="col-md-6">
         <label class="form-label">Cidade</label>
-        <input type="text" class="form-control" id="cidade" required>
+        <input type="text" class="form-control" id="cidade" required />
       </div>
       <div class="col-md-6">
         <label class="form-label">Dias de Culto</label>
-        <input type="text" class="form-control" id="diasCulto">
+        <input type="text" class="form-control" id="diasCulto" />
       </div>
       <div class="col-md-6">
         <label class="form-label">Dia da RJM</label>
-        <input type="text" class="form-control" id="diaRJM">
+        <input type="text" class="form-control" id="diaRJM" />
       </div>
       <div class="col-md-6">
         <label class="form-label">Ancião <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addCampo('anciao')">+</button></label>
         <div id="anciao-container">
-          <input type="text" class="form-control mb-2" name="anciao">
+          <input type="text" class="form-control mb-2" name="anciao" />
         </div>
       </div>
       <div class="col-md-6">
         <label class="form-label">Cooperador do Ofício <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addCampo('coopOficio')">+</button></label>
         <div id="coopOficio-container">
-          <input type="text" class="form-control mb-2" name="coopOficio">
+          <input type="text" class="form-control mb-2" name="coopOficio" />
         </div>
       </div>
       <div class="col-md-6">
         <label class="form-label">Diácono <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addCampo('diacono')">+</button></label>
         <div id="diacono-container">
-          <input type="text" class="form-control mb-2" name="diacono">
+          <input type="text" class="form-control mb-2" name="diacono" />
         </div>
       </div>
       <div class="col-md-6">
         <label class="form-label">Cooperador de Jovens e Menores</label>
-        <input type="text" class="form-control" id="coopJovens">
+        <input type="text" class="form-control" id="coopJovens" />
       </div>
     </div>
     <button type="submit" class="btn btn-primary mt-3">Cadastrar Congregação</button>
   </form>
 
-  <hr>
+  <hr />
   <h2>Congregações Cadastradas</h2>
   <ul id="listaCongregacoes" class="list-group mt-3"></ul>
 
@@ -91,49 +90,49 @@
       container.appendChild(input);
     }
 
-    const getValores = (nome) => {
-      return Array.from(document.getElementsByName(nome)).map(el => el.value).filter(v => v.trim() !== '');
-    };
-
-    const carregarCongregacoes = () => {
-      lista.innerHTML = '';
-      db.ref("congregacoes").once('value', (snapshot) => {
-        const dados = snapshot.val();
-        if (dados) {
-          Object.values(dados).forEach((c) => {
-            const li = document.createElement('li');
-            li.className = 'list-group-item';
-            li.textContent = `${c.congregacao} - ${c.cidade}`;
-            lista.appendChild(li);
-          });
-        }
-      });
-    };
+    function getValores(nome) {
+      return Array.from(document.getElementsByName(nome))
+        .map(el => el.value.trim())
+        .filter(v => v !== "");
+    }
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
 
       const congregacao = {
-        congregacao: document.getElementById('congregacao').value,
-        cidade: document.getElementById('cidade').value,
-        diasCulto: document.getElementById('diasCulto').value,
-        diaRJM: document.getElementById('diaRJM').value,
+        congregacao: document.getElementById('congregacao').value.trim(),
+        cidade: document.getElementById('cidade').value.trim(),
+        diasCulto: document.getElementById('diasCulto').value.trim(),
+        diaRJM: document.getElementById('diaRJM').value.trim(),
         anciao: getValores('anciao'),
         coopOficio: getValores('coopOficio'),
         diacono: getValores('diacono'),
-        coopJovens: document.getElementById('coopJovens').value
+        coopJovens: document.getElementById('coopJovens').value.trim()
       };
 
       db.ref("congregacoes").push(congregacao, (error) => {
         if (error) {
-          alert("Erro ao cadastrar: " + error.message);
+          alert("Erro ao salvar no Firebase: " + error.message);
         } else {
           alert("Congregação cadastrada com sucesso!");
           form.reset();
-          carregarCongregacoes();
+          carregarCongregacoes(); // opcional, se quiser carregar da base depois
         }
       });
     });
+
+    function carregarCongregacoes() {
+      lista.innerHTML = '';
+      db.ref("congregacoes").once("value", (snapshot) => {
+        snapshot.forEach((child) => {
+          const c = child.val();
+          const li = document.createElement('li');
+          li.className = 'list-group-item';
+          li.textContent = `${c.congregacao} - ${c.cidade}`;
+          lista.appendChild(li);
+        });
+      });
+    }
 
     window.onload = carregarCongregacoes;
   </script>
