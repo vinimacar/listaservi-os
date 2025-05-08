@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Marcação de Coletas</title>
+  <title>Cadastro de Congregações</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js"></script>
   <script>
-    const firebaseConfig = {
+   const firebaseConfig = {
   apiKey: "AIzaSyDv-6aazC2diSyhCOJiYUwN5NoZ67PsXUY",
   authDomain: "marcacao-coletas.firebaseapp.com",
   databaseURL: "https://marcacao-coletas-default-rtdb.firebaseio.com",
@@ -24,95 +24,86 @@
   </script>
 </head>
 <body class="container py-4">
-  <h1 class="mb-4">Marcação de Coletas</h1>
+  <h1 class="mb-4">Cadastro de Congregações</h1>
+  <form id="formCadastro">
+    <div class="mb-3">
+      <label class="form-label">Congregação</label>
+      <input type="text" class="form-control" name="congregacao" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Cidade</label>
+      <input type="text" class="form-control" name="cidade" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Dias de Culto</label>
+      <input type="text" class="form-control" name="diasCulto">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Dia da RJM</label>
+      <input type="text" class="form-control" name="diaRJM">
+    </div>
 
-  <div class="row">
-    <div class="col-md-8">
-      <div class="mb-3">
-        <label for="mesRef" class="form-label">Mês do Reforço</label>
-        <input type="month" id="mesRef" class="form-control">
+    <div class="mb-3">
+      <label class="form-label">Anciões</label>
+      <div id="listaAncioes">
+        <input type="text" class="form-control mb-2" name="anciao[]">
       </div>
-      <div id="botoesCongregacoes" class="d-flex flex-wrap gap-2 mb-4 border p-3 rounded" style="min-height: 100px; background: #f8f9fa;"></div>
+      <button type="button" class="btn btn-sm btn-secondary" onclick="adicionarCampo('listaAncioes', 'anciao[]')">+ Adicionar Ancião</button>
     </div>
-    <div class="col-md-4">
-      <h4>Coletas Agendadas</h4>
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>Congregação</th>
-            <th>Mês</th>
-            <th>Irmão</th>
-          </tr>
-        </thead>
-        <tbody id="tabelaAgendamentos"></tbody>
-      </table>
+
+    <div class="mb-3">
+      <label class="form-label">Diáconos</label>
+      <div id="listaDiaconos">
+        <input type="text" class="form-control mb-2" name="diacono[]">
+      </div>
+      <button type="button" class="btn btn-sm btn-secondary" onclick="adicionarCampo('listaDiaconos', 'diacono[]')">+ Adicionar Diácono</button>
     </div>
-  </div>
+
+    <div class="mb-3">
+      <label class="form-label">Cooperadores do Ofício</label>
+      <div id="listaCooperadores">
+        <input type="text" class="form-control mb-2" name="coopOficio[]">
+      </div>
+      <button type="button" class="btn btn-sm btn-secondary" onclick="adicionarCampo('listaCooperadores', 'coopOficio[]')">+ Adicionar Cooperador</button>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Cooperador de Jovens e Menores</label>
+      <input type="text" class="form-control" name="coopJovens">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Salvar</button>
+  </form>
 
   <script>
-    const botoesDiv = document.getElementById('botoesCongregacoes');
-    const tabela = document.getElementById('tabelaAgendamentos');
-    const mesRef = document.getElementById('mesRef');
-
-    function carregarBotoes() {
-      db.ref('congregacoes').once('value', snapshot => {
-        botoesDiv.innerHTML = '';
-        if (!snapshot.exists()) {
-          botoesDiv.innerHTML = '<p class="text-muted">Nenhuma congregação cadastrada.</p>';
-          return;
-        }
-        snapshot.forEach(child => {
-          const c = child.val();
-          const btn = document.createElement('button');
-          btn.className = 'btn btn-outline-primary';
-          btn.textContent = c.congregacao;
-          btn.onclick = () => marcarColeta(c.congregacao);
-          botoesDiv.appendChild(btn);
-        });
-      });
+    function adicionarCampo(containerId, name) {
+      const container = document.getElementById(containerId);
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.name = name;
+      input.className = 'form-control mb-2';
+      container.appendChild(input);
     }
 
-    function marcarColeta(congregacao) {
-      const mes = mesRef.value;
-      if (!mes) return alert('Selecione o mês do reforço.');
+    document.getElementById('formCadastro').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const form = e.target;
+      const dados = {
+        congregacao: form.congregacao.value,
+        cidade: form.cidade.value,
+        diasCulto: form.diasCulto.value,
+        diaRJM: form.diaRJM.value,
+        ancioes: Array.from(form.querySelectorAll('input[name="anciao[]"]')).map(i => i.value).filter(Boolean),
+        diaconos: Array.from(form.querySelectorAll('input[name="diacono[]"]')).map(i => i.value).filter(Boolean),
+        coopOficio: Array.from(form.querySelectorAll('input[name="coopOficio[]"]')).map(i => i.value).filter(Boolean),
+        coopJovens: form.coopJovens.value
+      };
 
-      db.ref('agendamentos').orderByChild('congregacao_mes').equalTo(`${congregacao}_${mes}`).once('value', snapshot => {
-        if (snapshot.exists()) {
-          alert('Esta congregação já foi agendada para este mês.');
-          return;
-        }
-
-        const nome = prompt(`Nome do irmão para atender ${congregacao} no mês ${mes}:`);
-        if (!nome || nome.trim() === '') return;
-
-        const novo = {
-          congregacao,
-          mes,
-          nome,
-          congregacao_mes: `${congregacao}_${mes}`
-        };
-
-        db.ref('agendamentos').push(novo, () => carregarTabela());
+      db.ref('congregacoes').push(dados, () => {
+        alert('Congregação cadastrada com sucesso!');
+        form.reset();
       });
-    }
-
-    function carregarTabela() {
-      tabela.innerHTML = '';
-      db.ref('agendamentos').once('value', snapshot => {
-        snapshot.forEach(child => {
-          const a = child.val();
-          const tr = document.createElement('tr');
-          tr.innerHTML = `<td>${a.congregacao}</td><td>${a.mes}</td><td>${a.nome}</td>`;
-          tabela.appendChild(tr);
-        });
-      });
-    }
-
-    window.onload = () => {
-      carregarBotoes();
-      carregarTabela();
-    };
+    });
   </script>
 </body>
 </html>
-
