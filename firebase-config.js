@@ -3,13 +3,13 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/fireba
 import { getDatabase } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
 
 const firebaseConfig = {
-  apiKey: "SUA_API_KEY",
-  authDomain: "SEU_PROJETO.firebaseapp.com",
-  databaseURL: "https://SEU_PROJETO.firebaseio.com",
-  projectId: "SEU_PROJETO",
-  storageBucket: "SEU_PROJETO.appspot.com",
-  messagingSenderId: "XXXXXXXXXXXX",
-  appId: "APP_ID"
+  apiKey: "AIzaSyDv-6aazC2diSyhCOJiYUwN5NoZ67PsXUY",
+  authDomain: "marcacao-coletas.firebaseapp.com",
+  databaseURL: "https://marcacao-coletas-default-rtdb.firebaseio.com",
+  projectId: "marcacao-coletas",
+  storageBucket: "marcacao-coletas.firebasestorage.app",
+  messagingSenderId: "546476889758",
+  appId: "1:546476889758:web:f193b3125feeb5f4514d8f"
 };
 
 const app = initializeApp(firebaseConfig);
