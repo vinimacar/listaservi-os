@@ -19,8 +19,9 @@
       appId: "1:546476889758:web:f193b3125feeb5f4514d8f"
     };
 
-    const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+   const app = firebase.initializeApp(firebaseConfig);
+   const db = firebase.database();
+
   </script>
 </head>
 <body class="container py-4">
@@ -116,7 +117,7 @@
         diacono: getValores('diacono'),
         coopJovens: document.getElementById('coopJovens').value
       };
-
+      console.log("Salvando no Firebase:", congregacao);
       db.ref('congregacoes').push(congregacao, () => {
         form.reset();
         carregarCongregacoes();
