@@ -1,3 +1,4 @@
+"""\
 // js/cadastro.js
 import { db } from "./firebase-config.js";
 import { ref, push } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
@@ -32,4 +33,4 @@ document.getElementById("formCadastro").addEventListener("submit", (e) => {
       alert("Erro ao cadastrar. Veja o console para detalhes.");
     });
 });
-
+"""
